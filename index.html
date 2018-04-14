@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>React - Testing
+        | PGS Software</title>
+    <meta name="description" content="React - Working with forms">
+    <meta name="author" content="Paweł">
+
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link href="main.css" rel="stylesheet">
+    <link href="custom.css" rel="stylesheet">
+</head>
+<!-- usuń klasę jeśli chcesz ciemne style (zenburn) dla 'code snippets' -->
+<body class="light-code">
+<div class="reveal">
+    <div class="slides">
+        <!-- TUTAJ ZACZYNA SIĘ PREZENTACJA - pierwszy slide -->
+
+        <!-- Talk title -->
+        <section data-state="squares-off theme orange">
+            <p><img src="./images/pgssoftware-logo-white.svg" alt="logo" class="img200"></p>
+            <h2>React - Testing</h2>
+            <ul class="list-horizontal">
+                <li>Paweł Lula</li>
+            </ul>
+        </section>
+
+        <!-- Agenda -->
+        <section>
+
+            <!-- Agenda dark -->
+            <section data-state="squares-off theme sidebar">
+                <h2>Agenda</h2>
+                <ul class="no-type dark-grey">
+                    <li class="fragment">Jest</li>
+                    <li class="fragment">Enzyme</li>
+                    <li class="fragment">Testing redux</li>
+                    <li class="fragment">Testing components</li>
+                    <li class="fragment">Other tools</li>
+                </ul>
+            </section>
+
+        </section>
+
+        <section>
+            <section>
+                <h2>Jest</h2>
+                <p>(https://facebook.github.io/jest/)</p>
+                <p>Jest is a JavaScript test runner.</p>
+
+                <p class="fragment"><b>Easy Setup:</b><br/> Complete and easy to set-up JavaScript testing solution. Works out of
+                    the box for any
+                    React project.</p>
+
+                <p class="fragment"><b>Instant Feedback:</b><br/> Fast interactive watch mode runs only test files related to
+                    changed files and is
+                    optimized to give signal quickly.</p>
+
+                <p class="fragment"><b>Snapshot Testing:</b><br/> Capture snapshots of React trees or other serializable values to
+                    simplify testing
+                    and to analyze how state changes over time.</p>
+                </p>
+            </section>
+            <section>
+                    <div class="divider">
+                    <div>
+                         <pre><code>
+function sum(a, b) {
+    return a + b;
+}
+        </code></pre>
+
+                    </div>
+                    <div>
+                          <pre><code>
+// Basic test
+
+describe('sum', () => {
+    it('adds 1 + 2 to equal 3', () => {
+        expect(sum(1, 2)).toBe(3);
+    });
+});
+        </code></pre>
+                    </div>
+                    </div>
+            </section>
+            <section>
+                <div class="divider">
+                    <div>
+        <pre><code>
+// let's assume it's fruit.js
+
+export const apple = 'apple';
+
+export const strawberry = () => 'strawberry';
+
+export default () => 'banana';
+        </code></pre>
+                    </div>
+                    <div>
+                <pre><code>
+// now we can mock that file by using jest.mock
+
+import defaultExport, {apple, strawberry} from '../fruit';
+
+jest.mock('../fruit', () => {
+    const originalModule = require.requireActual('../fruit');
+    const mockedModule = jest.genMockFromModule('../fruit');
+
+    // mock the default export and named export 'apple'.
+    return {
+        ...mockedModule,
+        ...originalModule,
+        {
+            apple: 'mocked apple',
+            default: jest.fn(() => 'mocked fruit'),
+        },
+    };
+});
+
+it('does a partial mock', () => {
+    const defaultExportResult = defaultExport();
+    expect(defaultExportResult).toBe('mocked fruit');
+    expect(defaultExport).toHaveBeenCalled();
+
+    expect(apple).toBe('mocked apple');
+    expect(strawberry()).toBe('strawberry');
+});
+                </code></pre>
+                </div>
+                </div>
+            </section>
+            <section>
+                <div class="divider">
+                    <div>
+                         <pre style="font-size: 0.5em"><code>
+import React, { Component } from 'react';
+
+class Clock extends Component {
+    state = { seconds: Date.now() / 1000 };
+
+    componentDidMount() {
+        this.timerID = setInterval(
+            () => this.tick(), 1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerID);
+    }
+
+    tick() {
+        this.setState({
+            seconds: Date.now() / 1000,
+        });
+    }
+
+    render() {
+        return (
+             <p>
+                 {this.state.seconds} seconds have elapsed
+                 since the UNIX epoch.
+             </p>
+        );
+    }
+}
+        </code></pre>
+                    </div>
+                    <div>
+                     <pre style="font-style: 0.4em"><code>
+import React from 'react';
+import renderer from 'react-test-renderer';
+
+jest.useFakeTimers();
+Date.now = jest.fn(() => 1482363367071);
+
+it('renders correctly', () => {
+    const tree = renderer.create(&lt;Clock/&gt;).toJSON();
+    expect(tree).toMatchSnapshot();
+});
+
+// will generate following snapshot
+exports[`renders correctly 1`] = `
+    <p>
+        1482363367.071
+        seconds have ellapsed since the UNIX epoch.
+    </p>
+`;
+        </code></pre>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <section>
+            <section>
+                <h2>Enzyme</h2>
+                <p>(https://airbnb.io/enzyme)</p>
+                <p>
+                    Enzyme is a JavaScript Testing utility for React that makes it easier to assert, manipulate, and
+                    traverse your React Components' output.
+                    Enzyme's API is meant to be intuitive and flexible by mimicking jQuery's API for DOM manipulation
+                    and traversal.
+                </p>
+            </section>
+            <section>
+                <h2>Rendering types</h2>
+                <p>
+                    <strong>Shallow render</strong><br> Renders your component as a single unit, without impacting of
+                    child's.
+                    Shallow is the recommended mode to start with since it does a better job of isolating your tests to
+                    just a single component.
+                </p>
+                <p>
+                    <strong>Full DOM render</strong><br> When you need to test integration with DOM API or component
+                    lifecycle
+                </p>
+                <p>
+                    <strong>Full DOM render</strong><br> Renders React Component to static HTML
+                </p>
+            </section>
+            <section>
+                <div class="divider">
+                    <div>
+                    <pre><code>
+// There are two components, parent and child
+
+const TodoList = ({ items, onChange }) =&gt; (
+    &lt;div className=&quot;todo-list&quot;&gt;
+        {items.map(item =&gt; (
+            &lt;TodoItem key={item.id} item={item} onCompleteChange={onChange}/&gt;
+        ))}
+    &lt;/div&gt;
+);
+
+ const TodoItem = ({ item, onCompleteChange }) =&gt; (
+    &lt;div&gt;
+        &lt;span className=&quot;item-mark&quot;&gt;{item.complete ? &quot;&#10003;&quot; : &quot;&bull;&quot;}&lt;/span&gt;
+        &lt;span className=&quot;item-title&quot;&gt;{item.title}&lt;/span&gt;
+        &lt;a onClick={() =&gt; onCompleteChange(item, !item.complete)}&gt;
+            Mark as {item.complete ? &quot;Pending&quot; : &quot;Complete&quot;}
+        &lt;/a&gt;
+    &lt;/div&gt;
+);
+                    </code></pre>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="divider">
+                    <div>
+                           <pre><code>
+// Shallow rendering
+
+import { shallow } from "enzyme";
+
+it(&quot;renders the entire list of items in shallow mode&quot;, () =&gt; {
+    const items = [
+      { id: 1, title: &quot;foo&quot;, complete: false },
+      { id: 2, title: &quot;bar&quot;, complete: false }
+    ];
+
+    const wrapper = shallow(&lt;TodoList items={items}/&gt;);
+
+    expect(wrapper).toMatchSnapshot();
+});
+                           </code></pre>
+                    </div>
+                    <div>
+   <pre><code>
+// will generate following snapshot
+
+exports[`&lt;TodoList/&gt; renders the entire list
+                        of items in shallow mode 1`] = `
+&lt;div className=&quot;todo-list&quot;&gt;
+  &lt;TodoItem item={
+      Object {
+        &quot;complete&quot;: false,
+        &quot;id&quot;: 1,
+        &quot;title&quot;: &quot;foo&quot;,
+      }
+    }
+    key=&quot;1&quot;
+  /&gt;
+  &lt;TodoItem item={
+      Object {
+        &quot;complete&quot;: false,
+        &quot;id&quot;: 2,
+        &quot;title&quot;: &quot;bar&quot;,
+      }
+    }
+    key=&quot;2&quot;
+  /&gt;
+&lt;/div&gt;
+`;
+    </code></pre>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="divider">
+                    <div>
+                        <pre><code>
+// Full DOM rendering
+
+import { mount } from &quot;enzyme&quot;;
+
+it(&quot;renders the entire list of items in mount mode&quot;, () =&gt; {
+  const items = [
+    { id: 1, title: &quot;foo&quot;, complete: false },
+    { id: 2, title: &quot;bar&quot;, complete: false }
+  ];
+
+  const wrapper = mount(&lt;TodoList items={items}/&gt;);
+
+  expect(wrapper).toMatchSnapshot();
+});
+                        </code></pre>
+                    </div>
+                    <div>
+                        <pre><code>
+// will generate following snapshot
+
+exports[`&lt;TodoList /&gt; renders the entire list
+                            of items in mount mode 1`] = `
+&lt;div className=&quot;todo-list&quot;&gt;
+  &lt;div&gt;
+    &lt;span className=&quot;item-mark&quot;&gt;&bull;&lt;/span&gt;
+    &lt;span className=&quot;item-title&quot;&gt;foo&lt;/span&gt;
+    &lt;a onClick={[Function]}&gt;Mark asComplete&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;div&gt;
+    &lt;span className=&quot;item-mark&quot;&gt;&bull;&lt;/span&gt;
+    &lt;span className=&quot;item-title&quot;&gt;bar&lt;/span&gt;
+    &lt;a onClick={[Function]}&gt;Mark as Complete&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+`;
+                        </code></pre>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <div class="divider">
+                    <div>
+                        <pre><code>
+// Static rendered markup
+
+import { render } from &quot;enzyme&quot;;
+
+it(&quot;renders the entire list of items in render mode&quot;, () =&gt; {
+  const items = [
+    { id: 1, title: &quot;foo&quot;, complete: false },
+    { id: 2, title: &quot;bar&quot;, complete: false }
+  ];
+
+  const wrapper = render(&lt;TodoList items={items}/&gt;);
+
+  expect(wrapper).toMatchSnapshot();
+});
+                        </code></pre>
+                    </div>
+                    <div>
+                        <pre><code>
+// will generate following snapshot
+
+exports[`&lt;TodoList/&gt; renders the entire
+                    list of items in render mode 1`] = `
+&lt;div class=&quot;todo-list&quot;&gt;
+  &lt;div&gt;
+    &lt;span class=&quot;item-mark&quot;&gt;&bull;&lt;/span&gt;
+    &lt;span class=&quot;item-title&quot;&gt;foo&lt;/span&gt;
+    &lt;a&gt;Mark as Complete&lt;/a&gt;
+  &lt;/div&gt;
+  &lt;div&gt;
+    &lt;span class=&quot;item-mark&quot;&gt;&bull;&lt;/span&gt;
+    &lt;span class=&quot;item-title&quot;&gt;bar&lt;/span&gt;
+    &lt;a&gt;Mark as Complete&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+`;
+                        </code></pre>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <section>
+            <h2>Testing redux</h2>
+            <p>https://github.com/desfero/react-testing</p>
+        </section>
+
+        <section>
+            <h2>Testing React component</h2>
+            <p>https://github.com/desfero/react-testing</p>
+        </section>
+
+        <section>
+            <h2>Other tools</h2>
+            <p>
+                Jest and Enzyme are the most used tools in react community (mainly because they are a part of
+                create-react-app).
+            </p>
+            <p class="fragment">
+                But there is a plenty of other test runners, among others <a href="https://github.com/avajs/ava">ava</a> and
+                <a href="https://mochajs.org/">mocha</a>.
+            </p>
+        </section>
+
+        <section>
+            <h3>To read:</h3>
+            <ul>
+                <li><a href="https://facebook.github.io/jest/docs/en/tutorial-react.html" target="_blank">Testing React
+                    Apps (part of jest docs)</a></li>
+                <li><a href="https://redux.js.org/recipes/writing-tests" target="_blank">Writing Tests (part of redux
+                    docs)</a></li>
+                <li><a href="http://airbnb.io/enzyme/" target="_blank">Enzyme docs</a></li>
+            </ul>
+        </section>
+
+        <!-- Thank you -->
+        <section data-state="squares-off theme orange">
+            <!-- class img50 to img400 (width: 50, 100, 150, 200, 250, 300, 350, 400 px ) -->
+            <!-- class padding-bottom, -top, -left, -right (padding-*: 50, 100, 150, 200, 250, 300, 350, 400 px ) -->
+            <h1>And finally it's time for questions</h1>
+        </section>
+
+        <!-- TUTAJ KOŃCZY SIĘ PREZENTACJA -->
+    </div>
+</div>
+
+<script type="text/javascript" src="presentation.js"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+.divider {
+    display: flex;
+}
+
+.divider > div {
+    flex: 1;
+    padding: 0 20px;
+}
+
+.divider > div:first-child {
+    padding-left: 0;
+}
+
+.divider > div:last-child {
+    padding-right: 0;
+}
+
+.divider > div + div {
+    border-left: 1px gray solid;
+
+}
+
+.divider pre {
+    box-shadow: none;
+    display: inline-block;
+    width: auto;
+}
+
+.divider pre .hljs {
+    background: none;
+    border: none;
+    display: inline-block;
+    font-weight: bold;
+    max-height: initial;
+}
