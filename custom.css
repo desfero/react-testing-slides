@@ -16,7 +16,7 @@
 }
 
 .divider > div + div {
-    border-left: 1px gray solid;
+    border-left: 1px #cecece solid;
 
 }
 

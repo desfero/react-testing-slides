@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
 
-    <title>React - Testing
+    <title>Testing in React
         | PGS Software</title>
     <meta name="description" content="React - Working with forms">
     <meta name="author" content="Paweł">
@@ -26,7 +26,7 @@
         <!-- Talk title -->
         <section data-state="squares-off theme orange">
             <p><img src="./images/pgssoftware-logo-white.svg" alt="logo" class="img200"></p>
-            <h2>React - Testing</h2>
+            <h2>Testing in React</h2>
             <ul class="list-horizontal">
                 <li>Paweł Lula</li>
             </ul>
@@ -52,21 +52,20 @@
         <section>
             <section>
                 <h2>Jest</h2>
-                <p>(https://facebook.github.io/jest/)</p>
-                <p>Jest is a JavaScript test runner.</p>
+                <small>https://facebook.github.io/jest/</small>
 
                 <p class="fragment"><b>Easy Setup:</b><br/> Complete and easy to set-up JavaScript testing solution. Works out of
-                    the box for any
-                    React project.</p>
+                    the box for any React project.</p>
 
                 <p class="fragment"><b>Instant Feedback:</b><br/> Fast interactive watch mode runs only test files related to
-                    changed files and is
-                    optimized to give signal quickly.</p>
+                    changed files and is optimized to give signal quickly.</p>
 
                 <p class="fragment"><b>Snapshot Testing:</b><br/> Capture snapshots of React trees or other serializable values to
-                    simplify testing
-                    and to analyze how state changes over time.</p>
+                    simplify testing and to analyze how state changes over time.</p>
                 </p>
+
+                <p class="fragment" ><b>Built-in code coverage reports</b><br/> Easily create code coverage reports using --coverage.
+                    No additional setup or libraries needed! Jest can collect code coverage information from entire projects, including untested files.</p>
             </section>
             <section>
                     <div class="divider">
@@ -201,10 +200,12 @@ exports[`renders correctly 1`] = `
         <section>
             <section>
                 <h2>Enzyme</h2>
-                <p>(https://airbnb.io/enzyme)</p>
+                <small>https://airbnb.io/enzyme</small>
                 <p>
                     Enzyme is a JavaScript Testing utility for React that makes it easier to assert, manipulate, and
                     traverse your React Components' output.
+                </p>
+                <p>
                     Enzyme's API is meant to be intuitive and flexible by mimicking jQuery's API for DOM manipulation
                     and traversal.
                 </p>
@@ -212,17 +213,17 @@ exports[`renders correctly 1`] = `
             <section>
                 <h2>Rendering types</h2>
                 <p>
-                    <strong>Shallow render</strong><br> Renders your component as a single unit, without impacting of
-                    child's.
-                    Shallow is the recommended mode to start with since it does a better job of isolating your tests to
-                    just a single component.
+                    <strong>Shallow render</strong><br>
+                    Renders your component as a single unit, without impacting of child's.
+                    Shallow is the recommended mode to start with since it does a better job of isolating your tests to just a single component.
                 </p>
                 <p>
-                    <strong>Full DOM render</strong><br> When you need to test integration with DOM API or component
-                    lifecycle
+                    <strong>Full DOM render</strong><br>
+                    When you need to test integration with DOM API or component lifecycle methods. f
+                    Full rendering actually mounts the component in the DOM, which means that tests are time consuming.
                 </p>
                 <p>
-                    <strong>Full DOM render</strong><br> Renders React Component to static HTML
+                    <strong>Full DOM render</strong><br> Renders React Component to static HTML.
                 </p>
             </section>
             <section>
